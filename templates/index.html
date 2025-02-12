@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>SignSpeak: Static Gesture Translator for Indian Sign Language</title>
+
+    <!-- Load the Socket.IO JavaScript library to establish a real-time connection with the backend -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <!-- Tailwind CSS for Modern Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Gesture Hover Effect */
+        .gesture img:hover {
+            transform: scale(1.2);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+    
+<body class="bg-gray-100 text-gray-900">
+    <!-- Page Layout using Flexbox -->
+    <div class="flex h-screen">
+        <!-- Sidebar for Gesture Guide -->
+        <div id="sidebar" class="w-64 bg-gray-800 text-white p-4 overflow-y-auto">
+            <h3 class="text-xl font-bold pb-4 border-b border-gray-500">Gesture Guide</h3>
+            <div class="space-y-4">
+                {% for gesture in ['afraid', 'agree', 'assistance', 'college', 'pain', 'skin', 'small', 'specific', 'warn', 'work', 'you', 'bad'] %}
+                <div class="gesture text-center">
+                    <img src="{{ url_for('static', filename=gesture + '.jpg') }}" alt="{{ gesture }}" class="rounded-lg w-37 h-37 mx-auto">
+                    <p class="mt-2 text-sm">{{ gesture.capitalize() }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-10 relative">
+            <h2 id="title" class="text-3xl font-semibold mb-5 text-center">SignSpeak: Static Gesture Translator</h2>
+
+            <!-- Video Stream Placeholder (Initially shows an image) -->
+            <div class="flex justify-center">
+                <img id="video_feed" src="{{ url_for('static', filename='placeholder.jpg') }}" 
+                    width="640" height="480" class="rounded-lg shadow-lg border border-gray-300"/>
+            </div>
+
+            <h3 class="text-lg font-medium mt-4 text-center"> Detected Gesture: 
+                <span id="gesture_text" class="text-blue-500 font-bold">None</span>
+            </h3>
+        </div>
+
+        <!-- Camera Control Buttons on the Right Side -->
+        <div class="flex flex-col space-y-4 absolute right-5 top-1/3">
+            <button onclick="startStream()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 shadow-md">
+                🎥 Start Camera
+            </button>
+            <button onclick="stopStream()" class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 shadow-md">
+                ⏹ Stop Camera
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Establish WebSocket Connection with Backend
+        var socket = io();
+
+        function startStream() {
+            socket.emit("start_stream");
+        }
+
+        function stopStream() { 
+            socket.emit("stop_stream");
+            document.getElementById("video_feed").src = "{{ url_for('static', filename='placeholder.jpg') }}";
+            document.getElementById("gesture_text").innerText = "Stream Stopped";
+        }
+
+        // Receiving Video Frames from Backend
+        socket.on("video_frame", function(data) {
+            document.getElementById("video_feed").src = "data:image/jpeg;base64," + data.image;
+            document.getElementById("gesture_text").innerText = data.gesture;
+        });
+    </script>
+</body>
+</html>
