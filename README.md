@@ -1,4 +1,4 @@
-# SignSpeak-Static-Gesture-Translator
+# SignSpeak: Static Gesture Translator
 
 ## Summary
 
