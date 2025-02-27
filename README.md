@@ -24,7 +24,8 @@ The primary aim of this project is to facilitate communication for individuals w
   5. Backend sends processed frames → Frontend updates the UI dynamically.
 
 <img width="887" alt="SignSpeak" src="https://github.com/user-attachments/assets/ef749e25-d59f-4e78-b772-1eb308da6919" />
-<img width="883" alt="bad_specific" src="https://github.com/user-attachments/assets/11036a25-1b9f-44ae-8db7-9b5fe618a345" />
+
+[SignSpeak.webm](https://github.com/user-attachments/assets/6b803dbf-87fd-4952-9a40-e3550240530d)
 
 
 ## Languages and Libraries Used
